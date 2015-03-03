@@ -12,7 +12,7 @@ void setup() {
   //String[] teamNames =
   cp5 = new ControlP5(this); 
   
-  teamSelection = cp5.addListBox("Teams").setPosition(200,10);
+  teamSelection = cp5.addListBox("Teams").setPosition(10,10);
   teamSelectData = new int[10][5];
   for (int i=0; i<10; i++) {
     teamSelection.addItem(""+i,i).setColorBackground(150);
@@ -22,6 +22,9 @@ void setup() {
     teamSelectData[i][3] = 255;
     teamSelectData[i][4] = 0;
   }
+  teamSelectData[5][1]=255;
+  teamSelectData[5][2]=0;
+  teamSelectData[5][3]=255;
   
   size(windowWidth, windowHeight);
   background(0);
@@ -29,25 +32,25 @@ void setup() {
 
 void draw() {
   if (keyPressed && key=='1') {
-    teamSelection.getItem("A: 1").setColorBackground(color(255,0,0));
+    teamSelection.getItem("1").setColorBackground(color(255,0,0));
   }
   generateAxis();
   int[][] pts1 = {{1,1},{2,2},{3,1},{5,4}};
   int[] col = {100,45,255};
-  grapher(pts1,col);
+  lineGraph(pts1,col);
   int[][] pts2 = {{1,6},{2,5},{3,4}};
   int[] col2 = {255,255,0};
-  grapher(pts2,col2);
+  lineGraph(pts2,col2);
 }
 
 void generateAxis() {
   stroke(255);
   strokeWeight(3);
-  line(100,100,100,windowHeight-100);
-  line(100,windowHeight-100,windowWidth-100,windowHeight-100);
+  line(150,100,150,windowHeight-100);
+  line(150,windowHeight-100,windowWidth-100,windowHeight-100);
 }
 
-void grapher(int[][] points, int[] col) {
+void lineGraph(int[][] points, int[] col) {
   stroke(col[0],col[1],col[2]);
   strokeWeight(2);
   for (int i=0; i<points.length; i++) {
@@ -62,9 +65,26 @@ void grapher(int[][] points, int[] col) {
   }
 }
 
+// Toggle team selections
+void toggleTeamSelected(int teamNumber) {
+  int i = teamNumber;
+  if (teamSelectData[i][4]==0) {
+    teamSelectData[i][4] = 1;
+    teamSelection.getItem(teamSelectData[i][0]).setColorBackground(color(teamSelectData[i][1],teamSelectData[i][2],teamSelectData[i][3]));
+  } else {
+    teamSelectData[i][4] = 0;
+    teamSelection.getItem(teamSelectData[i][0]).setColorBackground(150);
+  }
+}
+
 // controlEvent monitors clicks on the gui
 void controlEvent(ControlEvent theEvent) {
   if (theEvent.isGroup()) {
     println(theEvent.getGroup() + " => " + theEvent.getGroup().getValue());
+    String var = "Teams [ListBox]";
+    if (theEvent.getGroup().toString().equals(var)) {
+      System.out.println("Yay!");
+      toggleTeamSelected((int)theEvent.getGroup().getValue());
+    }
   }
 }
